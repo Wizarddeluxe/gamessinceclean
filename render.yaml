@@ -13,4 +13,4 @@ services:
     plan: starter
     buildCommand: pip install -r requirements.txt
     startCommand: python rebuild_cache.py
-    schedule: "0 9 * * *"  # 4 AM Central Time
+    schedule: "0 9 * * *"
