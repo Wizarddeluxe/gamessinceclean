@@ -1,5 +1,5 @@
+
 import json
-import os
 import requests
 
 def get_season_home_run_hitters():
@@ -12,34 +12,19 @@ def get_hr_stats(player_id):
     logs = r.json()["stats"][0]["splits"]
     
     if not logs:
-        print(f"⚠️ No data for player {player_id}")
-    
-    games = 0
-    abs_ = 0
-    hits = 0
-    rbis = 0
-    walks = 0
-    home_runs = 0
-    last_hr_game = None
+        return "-", "-", "-", "-", "-", "-"
 
-    for game in logs:
-        games += 1
-        abs_ += int(game["stat"].get("atBats", 0))
-        hits += int(game["stat"].get("hits", 0))
-        rbis += int(game["stat"].get("rbi", 0))
-        walks += int(game["stat"].get("baseOnBalls", 0))
-        home_runs += int(game["stat"].get("homeRuns", 0))
-        
-        if int(game["stat"].get("homeRuns", 0)) > 0 and last_hr_game is None:
-            last_hr_game = game["date"]
+    hits = sum(int(g["stat"].get("hits", 0)) for g in logs)
+    rbi = sum(int(g["stat"].get("rbi", 0)) for g in logs)
+    walks = sum(int(g["stat"].get("baseOnBalls", 0)) for g in logs)
+    home_runs = sum(int(g["stat"].get("homeRuns", 0)) for g in logs)
 
-    if last_hr_game:
-        games_since_hr = 0
-        abs_since_hr = 0
-        for game in logs:
-            if game["date"] > last_hr_game:
-                games_since_hr += 1
-                abs_since_hr += int(game["stat"].get("atBats", 0))
-        return games_since_hr, abs_since_hr, hits, rbis, walks, home_runs
-    else:
-        return "-", "-", hits, rbis, walks, home_runs
+    last_hr_index = next((i for i, g in enumerate(logs) if int(g["stat"].get("homeRuns", 0)) > 0), None)
+
+    if last_hr_index is None:
+        return "-", "-", hits, rbi, walks, home_runs
+
+    games_since_hr = last_hr_index
+    abs_since_hr = sum(int(logs[i]["stat"].get("atBats", 0)) for i in range(last_hr_index))
+
+    return games_since_hr, abs_since_hr, hits, rbi, walks, home_runs
