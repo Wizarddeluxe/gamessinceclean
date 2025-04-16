@@ -7,7 +7,6 @@
     table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
     th, td { padding: 0.5rem; border: 1px solid #444; white-space: nowrap; text-align: left; }
     th { background: #333; cursor: pointer; }
-    img.logo { height: 20px; vertical-align: middle; margin-right: 5px; }
   </style>
   <script>
     function sortTable(n) {
@@ -39,7 +38,7 @@
     </tr>
     {% for p in leaderboard %}
     <tr>
-      <td><img class="logo" src="https://www.mlbstatic.com/team-logos/{{ p.id % 30 }}.svg" onerror="this.style.display='none'">{{ p.name }}</td>
+      <td>{{ p.name }}</td>
       <td>{{ p.homeRuns }}</td>
       <td>{{ p.hits }}</td>
       <td>{{ p.rbi }}</td>
