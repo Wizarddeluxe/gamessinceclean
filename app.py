@@ -12,9 +12,9 @@ def index():
     leaderboard = []
     for p in players:
         try:
-            games, abs_, hits, rbis, walks, home_runs = get_hr_stats(p["id"])
-            p["games_since_hr"] = games
-            p["abs_since_hr"] = abs_
+            games_since_hr, abs_since_hr, hits, rbis, walks, home_runs = get_hr_stats(p["id"])
+            p["games_since_hr"] = games_since_hr
+            p["abs_since_hr"] = abs_since_hr
             p["hits"] = hits
             p["rbi"] = rbis
             p["baseOnBalls"] = walks
