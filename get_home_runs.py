@@ -16,12 +16,14 @@ def get_hr_stats(player_id):
     hits = 0
     rbis = 0
     walks = 0
+    home_runs = 0
     for game in logs:
         games += 1
         abs_ += int(game["stat"].get("atBats", 0))
         hits += int(game["stat"].get("hits", 0))
         rbis += int(game["stat"].get("rbi", 0))
         walks += int(game["stat"].get("baseOnBalls", 0))
+        home_runs += int(game["stat"].get("homeRuns", 0))  # Ensure HRs are included
         if int(game["stat"].get("homeRuns", 0)) > 0:
             break
-    return games, abs_, hits, rbis, walks
+    return games, abs_, hits, rbis, walks, home_runs

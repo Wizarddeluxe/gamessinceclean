@@ -12,18 +12,20 @@ def index():
     leaderboard = []
     for p in players:
         try:
-            games, abs_, hits, rbis, walks = get_hr_stats(p["id"])
+            games, abs_, hits, rbis, walks, home_runs = get_hr_stats(p["id"])
             p["games_since_hr"] = games
             p["abs_since_hr"] = abs_
             p["hits"] = hits
             p["rbi"] = rbis
             p["baseOnBalls"] = walks
+            p["homeRuns"] = home_runs
         except:
             p["games_since_hr"] = "-"
             p["abs_since_hr"] = "-"
             p["hits"] = "-"
             p["rbi"] = "-"
             p["baseOnBalls"] = "-"
+            p["homeRuns"] = "-"
         leaderboard.append(p)
     leaderboard = sorted(leaderboard, key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0, reverse=True)
     return render_template("index.html", leaderboard=leaderboard)
