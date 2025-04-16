@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template
 from get_home_runs import get_season_home_run_hitters, get_hr_stats
 import os
@@ -11,12 +12,18 @@ def index():
     leaderboard = []
     for p in players:
         try:
-            games, abs_ = get_hr_stats(p["id"])
+            games, abs_, hits, rbis, walks = get_hr_stats(p["id"])
             p["games_since_hr"] = games
             p["abs_since_hr"] = abs_
+            p["hits"] = hits
+            p["rbi"] = rbis
+            p["baseOnBalls"] = walks
         except:
             p["games_since_hr"] = "-"
             p["abs_since_hr"] = "-"
+            p["hits"] = "-"
+            p["rbi"] = "-"
+            p["baseOnBalls"] = "-"
         leaderboard.append(p)
     leaderboard = sorted(leaderboard, key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0, reverse=True)
     return render_template("index.html", leaderboard=leaderboard)
