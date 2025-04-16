@@ -5,19 +5,27 @@ import requests
 
 app = Flask(__name__)
 
-def get_player_totals(player_id):
-    url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=season&season=2025"
+def get_player_totals_from_logs(player_id):
+    url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=gameLog&season=2025"
     try:
-        r = requests.get(url).json()
-        stats = r["stats"][0]["splits"][0]["stat"]
-        return {
-            "homeRuns": int(stats.get("homeRuns", 0)),
-            "hits": int(stats.get("hits", 0)),
-            "rbi": int(stats.get("rbi", 0)),
-            "baseOnBalls": int(stats.get("baseOnBalls", 0))
+        r = requests.get(url)
+        r.raise_for_status()
+        logs = r.json()["stats"][0]["splits"]
+        totals = {
+            "homeRuns": 0,
+            "hits": 0,
+            "rbi": 0,
+            "baseOnBalls": 0
         }
+        for game in logs:
+            stat = game["stat"]
+            totals["homeRuns"] += int(stat.get("homeRuns", 0))
+            totals["hits"] += int(stat.get("hits", 0))
+            totals["rbi"] += int(stat.get("rbi", 0))
+            totals["baseOnBalls"] += int(stat.get("baseOnBalls", 0))
+        return totals
     except Exception as e:
-        print(f"⚠️ Failed to fetch stats for {player_id}: {e}")
+        print(f"⚠️ Error aggregating logs for {player_id}: {e}")
         return {
             "homeRuns": "-",
             "hits": "-",
@@ -42,12 +50,15 @@ def index():
             p["games_since_hr"] = "-"
             p["abs_since_hr"] = "-"
 
-        totals = get_player_totals(p["id"])
-        p.update(totals)
+        season_totals = get_player_totals_from_logs(p["id"])
+        p.update(season_totals)
         leaderboard.append(p)
 
-    # Sort by HRs descending
-    leaderboard = sorted(leaderboard, key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0, reverse=True)
+    leaderboard = sorted(
+        leaderboard,
+        key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0,
+        reverse=True
+    )
 
     return render_template("index.html", leaderboard=leaderboard, players=players)
 
