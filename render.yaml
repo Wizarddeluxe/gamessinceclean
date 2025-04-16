@@ -3,14 +3,14 @@ services:
   - type: web
     name: gamessince-web
     env: python
-    plan: starter
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
 
   - type: cron
     name: gamessince-cron
     env: python
-    plan: starter
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python3 rebuild_cache.py
+    startCommand: python rebuild_cache.py
     schedule: "0 9 * * *"
