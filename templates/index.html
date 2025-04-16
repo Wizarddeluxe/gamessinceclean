@@ -1,97 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>⚾ Games Since</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 2rem;
-      background-color: #f4f4f4;
-      color: #333;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.5rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2rem;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-      white-space: nowrap;
-    }
-    th {
-      background-color: #fafafa;
-    }
-    .container {
-      max-width: 880px;
-      margin: 0 auto;
-    }
-    .subtitle {
-      margin-top: 0;
-      color: #666;
-    }
-    .dark-mode {
-      background-color: #1e1e1e;
-      color: #f1f1f1;
-    }
-    .dark-mode table {
-      background-color: #2c2c2c;
-      color: #f1f1f1;
-    }
-    .dark-mode th {
-      background-color: #3c3c3c;
-    }
-    .toggle {
-      margin-top: 1rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
+    body { font-family: sans-serif; background: #1e1e1e; color: white; padding: 2rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+    th, td { padding: 0.5rem; border: 1px solid #444; white-space: nowrap; }
+    th { background: #333; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>⚾ Games Since</h1>
-    <p class="subtitle">Leaderboard of home run hitters across the 2025 season</p>
-    <div class="toggle" onclick="toggleDark()">🌓 Toggle Dark Mode</div>
-
-    <table>
-      <tr>
-        <th>🏃‍♂️ Player</th>
-        <th>💣 HRs</th>
-        <th>🧢 Hits</th>
-        <th>🍖 RBIs</th>
-        <th>🎟 Walks</th>
-        <th>📆 Games Since Last HR</th>
-        <th>🎯 ABs Since Last HR</th>
-      </tr>
-      {% for p in leaderboard %}
-      <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.homeRuns or "–" }}</td>
-        <td>{{ p.hits or "–" }}</td>
-        <td>{{ p.rbi or "–" }}</td>
-        <td>{{ p.baseOnBalls or "–" }}</td>
-        <td>{{ p.games_since_hr or "–" }}</td>
-        <td>{{ p.abs_since_hr or "–" }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-
-  <script>
-    function toggleDark() {
-      document.body.classList.toggle("dark-mode");
-    }
-  </script>
+  <h1>⚾ Games Since</h1>
+  <p>Leaderboard of home run hitters across the 2025 season</p>
+  <table>
+    <tr>
+      <th>🏃‍♂️ Player</th><th>💣 HRs</th><th>🧢 Hits</th><th>🍖 RBIs</th><th>🎟 Walks</th><th>📆 Games Since</th><th>🎯 ABs Since</th>
+    </tr>
+    {% for p in leaderboard %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.homeRuns }}</td>
+      <td>{{ p.hits }}</td>
+      <td>{{ p.rbi }}</td>
+      <td>{{ p.baseOnBalls }}</td>
+      <td>{{ p.games_since_hr }}</td>
+      <td>{{ p.abs_since_hr }}</td>
+    </tr>
+    {% endfor %}
+  </table>
 </body>
 </html>

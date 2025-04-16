@@ -9,14 +9,8 @@ def get_player_totals_from_logs(player_id):
     url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=gameLog&season=2025"
     try:
         r = requests.get(url)
-        r.raise_for_status()
         logs = r.json()["stats"][0]["splits"]
-        totals = {
-            "homeRuns": 0,
-            "hits": 0,
-            "rbi": 0,
-            "baseOnBalls": 0
-        }
+        totals = {"homeRuns": 0, "hits": 0, "rbi": 0, "baseOnBalls": 0}
         for game in logs:
             stat = game["stat"]
             totals["homeRuns"] += int(stat.get("homeRuns", 0))
@@ -24,44 +18,25 @@ def get_player_totals_from_logs(player_id):
             totals["rbi"] += int(stat.get("rbi", 0))
             totals["baseOnBalls"] += int(stat.get("baseOnBalls", 0))
         return totals
-    except Exception as e:
-        print(f"⚠️ Error aggregating logs for {player_id}: {e}")
-        return {
-            "homeRuns": "-",
-            "hits": "-",
-            "rbi": "-",
-            "baseOnBalls": "-"
-        }
+    except:
+        return {"homeRuns": "-", "hits": "-", "rbi": "-", "baseOnBalls": "-"}
 
 @app.route("/")
 def index():
     players = get_season_home_run_hitters()
-    print(f"✅ Loaded {len(players)} HR hitters from cache")
-
     leaderboard = []
-
     for p in players:
         try:
-            streak_games, streak_abs = get_hr_stats(p["id"])
-            p["games_since_hr"] = streak_games
-            p["abs_since_hr"] = streak_abs
-        except Exception as e:
-            print(f"⚠️ Error with {p['name']} streaks: {e}")
+            games, abs_ = get_hr_stats(p["id"])
+            p["games_since_hr"] = games
+            p["abs_since_hr"] = abs_
+        except:
             p["games_since_hr"] = "-"
             p["abs_since_hr"] = "-"
-
-        season_totals = get_player_totals_from_logs(p["id"])
-        p.update(season_totals)
+        p.update(get_player_totals_from_logs(p["id"]))
         leaderboard.append(p)
-
-    leaderboard = sorted(
-        leaderboard,
-        key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0,
-        reverse=True
-    )
-
-    return render_template("index.html", leaderboard=leaderboard, players=players)
+    leaderboard = sorted(leaderboard, key=lambda x: x.get("homeRuns", 0) if isinstance(x.get("homeRuns"), int) else 0, reverse=True)
+    return render_template("index.html", leaderboard=leaderboard)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
