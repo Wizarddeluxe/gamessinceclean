@@ -18,7 +18,17 @@ def index():
         print(f"❌ Failed to load HR cache: {e}")
         players = []
 
-    return render_template("index.html", players=players, leaderboard=[])
+    # Use players directly for leaderboard with mocked stats
+    leaderboard = players
+    for p in leaderboard:
+        p["homeRuns"] = 1
+        p["hits"] = 4
+        p["rbi"] = 3
+        p["baseOnBalls"] = 2
+        p["games_since_hr"] = 0
+        p["abs_since_hr"] = 3
+
+    return render_template("index.html", players=players, leaderboard=leaderboard)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
