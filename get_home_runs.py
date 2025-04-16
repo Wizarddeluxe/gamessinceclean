@@ -4,15 +4,17 @@ import os
 import requests
 
 def get_season_home_run_hitters():
+    # Ensure the cache is rebuilt to fetch data for the full season
     with open("data/season_hr_cache.json") as f:
         return json.load(f)
 
 def get_hr_stats(player_id):
+    # Fetch the data for the full 2025 season for a given player
     url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=gameLog&season=2025"
     r = requests.get(url)
     logs = r.json()["stats"][0]["splits"]
     
-    if not logs:  # Check if no game logs are returned
+    if not logs:
         print(f"⚠️ No data for player {player_id}")
     
     games = 0
@@ -23,7 +25,7 @@ def get_hr_stats(player_id):
     home_runs = 0
     last_hr_game = None  # Track the last HR game
 
-    # Iterate through all games to calculate stats
+    # Iterate through all games to calculate stats for the whole 2025 season
     for game in logs:
         games += 1
         abs_ += int(game["stat"].get("atBats", 0))
@@ -32,7 +34,7 @@ def get_hr_stats(player_id):
         walks += int(game["stat"].get("baseOnBalls", 0))
         home_runs += int(game["stat"].get("homeRuns", 0))
         
-        # Track last HR game
+        # Track the last HR game
         if int(game["stat"].get("homeRuns", 0)) > 0:
             last_hr_game = game["date"]
             break  # Stop after finding the last HR hit game
