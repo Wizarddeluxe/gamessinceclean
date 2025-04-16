@@ -1,8 +1,6 @@
-
 from flask import Flask, render_template
 from get_home_runs import get_season_home_run_hitters, get_hr_stats
 import os
-import requests
 
 app = Flask(__name__)
 
