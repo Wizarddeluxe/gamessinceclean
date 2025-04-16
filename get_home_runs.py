@@ -9,12 +9,11 @@ def get_season_home_run_hitters():
         return json.load(f)
 
 def get_hr_stats(player_id):
-    # Fetch the data for the full 2025 season for a given player
     url = f"https://statsapi.mlb.com/api/v1/people/{player_id}/stats?stats=gameLog&season=2025"
     r = requests.get(url)
     logs = r.json()["stats"][0]["splits"]
     
-    if not logs:
+    if not logs:  # Check if no game logs are returned
         print(f"⚠️ No data for player {player_id}")
     
     games = 0
@@ -25,7 +24,7 @@ def get_hr_stats(player_id):
     home_runs = 0
     last_hr_game = None  # Track the last HR game
 
-    # Iterate through all games to calculate stats for the whole 2025 season
+    # Iterate through all games to calculate stats for the entire 2025 season
     for game in logs:
         games += 1
         abs_ += int(game["stat"].get("atBats", 0))
